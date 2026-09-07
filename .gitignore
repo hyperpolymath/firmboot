@@ -1,0 +1,7 @@
+/_build/
+/cover/
+/proofs/lean/.lake/
+/.ci-deps/
+/.ci-results/
+**/*.agdai
+**/__pycache__/

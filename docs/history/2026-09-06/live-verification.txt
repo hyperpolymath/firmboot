@@ -1,0 +1,46 @@
+Recorded: 2026-09-06
+Scope: local live-runner and abstract-controller extension
+
+Command: mix format --check-formatted
+Exit: 0
+
+Command: mix compile --warnings-as-errors
+Exit: 0
+Compiling 2 files (.ex)
+Generated firmboot_reference app
+
+Command: mix test --seed 0
+Exit: 0
+Running ExUnit with seed: 0, max_cases: 40
+
+.................................
+Finished in 0.5 seconds (0.5s async, 0.00s sync)
+33 tests, 0 failures
+
+Command: mix run -e 'Firmboot.LiveExperiment.run()'
+Exit: 0
+Input 1: owner=v1 active_after=v1 event=false
+Input 2: owner=v1 active_after=v1 event=true
+Input 3: owner=v1 active_after=v1 event=false
+Input 4: owner=v1 active_after=v1 event=false
+Hung preparation retired: tick_timeout after input 4
+Input 5: owner=v1 active_after=v2 event=false
+Input 6: owner=v2 active_after=v2 event=false
+Input 7: owner=v2 active_after=v2 event=false
+Input 8: owner=v2 active_after=v2 event=false
+Input 9: owner=v2 active_after=v2 event=false
+Input 10: owner=v2 active_after=v2 event=false
+Same detector process survived: #PID<0.118.0>
+Returned 10 consecutive frames and one episode report; active version: v2
+Retained diagnostic frames: 4 / 4
+
+Command: bash proofs/lean/verify.sh
+Exit: 0
+✔ [9/10] Built Audit (289ms)
+Build completed successfully (10 jobs).
+PASS: Lean rejected the false ResetOwnership claim
+PASS: Lean rejected the false DropObservation claim
+PASS: Lean rejected the false OverlapPhases claim
+PASS: Lean rejected the false StaleReply claim
+PASS: Lean rejected the false BlockingPreparation claim
+PASS: proof build, pinned axiom audit, and all five rejection controls

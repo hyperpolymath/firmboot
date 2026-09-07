@@ -1,0 +1,12 @@
+name = "firmboot_proofs"
+version = "0.1.0"
+defaultTargets = ["Firmboot", "Audit", "AuditPolicy"]
+
+[[lean_lib]]
+name = "Firmboot"
+
+[[lean_lib]]
+name = "Audit"
+
+[[lean_lib]]
+name = "AuditPolicy"
