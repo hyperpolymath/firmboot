@@ -315,3 +315,67 @@ import Firmboot
 /-- info: 'Firmboot.roundtrip_v2' depends on axioms: [propext] -/
 #guard_msgs in
 #print axioms Firmboot.roundtrip_v2
+
+/-- info: 'Firmboot.WaterLeak.handover_readings' does not depend on any axioms -/
+#guard_msgs in
+#print axioms Firmboot.WaterLeak.handover_readings
+
+/-- info: 'Firmboot.WaterLeak.handover_receipts' does not depend on any axioms -/
+#guard_msgs in
+#print axioms Firmboot.WaterLeak.handover_receipts
+
+/-- info: 'Firmboot.WaterLeak.handover_reports' depends on axioms: [propext] -/
+#guard_msgs in
+#print axioms Firmboot.WaterLeak.handover_reports
+
+/-- info: 'Firmboot.WaterLeak.handover_outstanding' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms Firmboot.WaterLeak.handover_outstanding
+
+/-- info: 'Firmboot.WaterLeak.acknowledgement_discharges' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms Firmboot.WaterLeak.acknowledgement_discharges
+
+/-- info: 'Firmboot.WaterLeak.acknowledgement_idempotent' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms Firmboot.WaterLeak.acknowledgement_idempotent
+
+/-- info: 'Firmboot.WaterLeak.wrong_source_unchanged' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms Firmboot.WaterLeak.wrong_source_unchanged
+
+/-- info: 'Firmboot.WaterLeak.unknown_warning_unchanged' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms Firmboot.WaterLeak.unknown_warning_unchanged
+
+/-- info: 'Firmboot.WaterLeak.acknowledge_preserves_readings' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms Firmboot.WaterLeak.acknowledge_preserves_readings
+
+/-- info: 'Firmboot.WaterLeak.sample_preserves_receipts' does not depend on any axioms -/
+#guard_msgs in
+#print axioms Firmboot.WaterLeak.sample_preserves_receipts
+
+/-- info: 'Firmboot.WaterLeak.sample_records_exact_reading' depends on axioms: [propext] -/
+#guard_msgs in
+#print axioms Firmboot.WaterLeak.sample_records_exact_reading
+
+/-- info: 'Firmboot.WaterLeak.wrong_sequence_unchanged' depends on axioms: [propext] -/
+#guard_msgs in
+#print axioms Firmboot.WaterLeak.wrong_sequence_unchanged
+
+/-- info: 'Firmboot.WaterLeak.sample_preserves_outstanding' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms Firmboot.WaterLeak.sample_preserves_outstanding
+
+/-- info: 'Firmboot.WaterLeak.acknowledge_handover_commute' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms Firmboot.WaterLeak.acknowledge_handover_commute
+
+/-- info: 'Firmboot.WaterLeak.active_warning_survives' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms Firmboot.WaterLeak.active_warning_survives
+
+/-- info: 'Firmboot.WaterLeak.clear_signal_keeps_obligation' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms Firmboot.WaterLeak.clear_signal_keeps_obligation

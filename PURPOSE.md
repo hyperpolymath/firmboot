@@ -56,10 +56,12 @@ as a distinct objective. USGS documents the public uses and quality assurance of
 [streamflow monitoring](https://www.usgs.gov/programs/groundwater-and-streamflow-information-program/streamflow-monitoring).
 Those sources motivate the domains; they provide no validation of Firmboot.
 
-A useful first domain study would be **continuity of a water-leak warning
-episode**, using recorded or simulated inputs. It maps directly to the existing
-experiment's history and no-duplicate-report questions. Establish the observation
-contract and detection-quality limits before considering any physical control.
+The first domain study now implements **continuity of a water-leak warning
+episode**, using simulated interval volumes. Its resident ledger preserves raw
+measurements, warning identity and outstanding operator acknowledgements across
+a detector update. See the [reproducible experiment and proof boundaries](docs/water-leak-experiment.md).
+It establishes a finite software contract; detection quality, physical control
+and measured ecological benefits remain separate obligations.
 
 ## Continuity must include limits and stopping
 
