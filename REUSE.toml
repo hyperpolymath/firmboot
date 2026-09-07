@@ -2,7 +2,7 @@ version = 1
 
 [[annotations]]
 path = [
-  "lib/**", "test/**", "mix.exs", ".formatter.exs", ".gitignore", ".github/**",
+  "lib/**", "test/**", "mix.exs", ".formatter.exs", ".gitignore", ".gitattributes", ".github/**",
   "REUSE.toml", "proofs/agda/**/*.agda", "proofs/agda/*.py", "proofs/agda/*.exs",
   "proofs/lean/**/*.lean", "proofs/lean/*.lean", "proofs/lean/*.sh",
   "proofs/lean/*.toml", "proofs/lean/*.json", "proofs/lean/lean-toolchain"

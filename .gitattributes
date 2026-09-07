@@ -1,0 +1,3 @@
+# SPDX-License-Identifier: MPL-2.0
+# Preserve the official licence texts downloaded by REUSE verbatim.
+LICENSES/*.txt -whitespace
