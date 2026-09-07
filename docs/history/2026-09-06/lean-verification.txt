@@ -1,0 +1,26 @@
+Recorded: 2026-09-06
+Toolchain: leanprover/lean4:v4.33.1
+Working directory: llm-coding-configs/codex/firmboot/proofs/lean
+Command: bash verify.sh
+Exit: 0
+
+✔ [8/9] Built Audit (434ms)
+Build completed successfully (9 jobs).
+PASS: Lean rejected the false ResetOwnership claim
+PASS: Lean rejected the false DropObservation claim
+PASS: Lean rejected the false OverlapPhases claim
+PASS: proof build, pinned axiom audit, and all three rejection controls
+
+Extension recorded: 2026-09-06
+Scope: 79 named theorems in five modules; bounded update supervision added
+Command: bash verify.sh
+Exit: 0
+
+✔ [9/10] Built Audit (289ms)
+Build completed successfully (10 jobs).
+PASS: Lean rejected the false ResetOwnership claim
+PASS: Lean rejected the false DropObservation claim
+PASS: Lean rejected the false OverlapPhases claim
+PASS: Lean rejected the false StaleReply claim
+PASS: Lean rejected the false BlockingPreparation claim
+PASS: proof build, pinned axiom audit, and all five rejection controls

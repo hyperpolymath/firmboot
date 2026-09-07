@@ -1,0 +1,116 @@
+# This workflow is managed by gh actions-lock.
+
+name: Continuity Verification
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  merge_group:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  LANG: C.UTF-8
+  LC_ALL: C.UTF-8
+
+jobs:
+  agda-elixir:
+    name: Agda contract and Elixir agreement
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    container: debian:13-slim@sha256:d7e12182ce18b85b93007c1dedf31f2d29e01ccf3182cc4017c709b6259bc132
+    steps:
+      - name: Install authenticated, version-pinned language packages
+        run: |
+          apt-get update
+          apt-get install --no-install-recommends -y ca-certificates git ripgrep python3 \
+            agda-bin=2.6.4.3-1+b2 elixir=1.18.3.dfsg-1
+      - uses: actions/checkout@v6.0.3
+        with:
+          persist-credentials: false
+      - name: Checkout merged epistemic foundations
+        uses: actions/checkout@v6.0.3
+        with:
+          repository: hyperpolymath/epistemic-types
+          ref: ad14e35e6e437b116284a43ecff5ebc09d67e37e
+          path: .ci-deps/epistemic-types
+          persist-credentials: false
+      - name: Recheck proofs, rejection controls, runtime and observed agreement
+        run: python3 proofs/agda/verify.py --ci
+      - name: Ensure observed witnesses are reproducible
+        run: |
+          git -c safe.directory="$GITHUB_WORKSPACE" -C "$GITHUB_WORKSPACE" rev-parse --show-toplevel
+          git -c safe.directory="$GITHUB_WORKSPACE" -C "$GITHUB_WORKSPACE" diff --exit-code -- proofs/agda/Firmboot/ElixirAgreement.agda
+      - name: Retain exact verification diagnostics
+        if: always()
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: agda-elixir-verification
+          path: .ci-results/agda
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 30
+
+  lean:
+    name: Lean continuity and axiom audit
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6.0.3
+        with:
+          persist-credentials: false
+      - name: Install proof audit dependency
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y ripgrep
+      - name: Install the checksum-pinned official Lean release
+        env:
+          FIRMBOOT_LEAN_DIR: ${{ runner.temp }}/firmboot-lean
+        run: |
+          mkdir -p "$FIRMBOOT_LEAN_DIR"
+          curl --fail --location --proto '=https' --tlsv1.2 --retry 3 \
+            https://github.com/leanprover/lean4/releases/download/v4.33.1/lean-4.33.1-linux.tar.zst \
+            --output "$RUNNER_TEMP/firmboot-lean.tar.zst"
+          echo '890afd185370f85666025b883914ab4f4b339136f8c96167b69cfb62aecaf235'"  $RUNNER_TEMP/firmboot-lean.tar.zst" | sha256sum --check --strict
+          tar --zstd -xf "$RUNNER_TEMP/firmboot-lean.tar.zst" --strip-components=1 -C "$FIRMBOOT_LEAN_DIR"
+          echo "$FIRMBOOT_LEAN_DIR/bin" >> "$GITHUB_PATH"
+      - name: Build all Lean proofs, audit axioms and reject false claims
+        run: bash proofs/lean/verify.sh
+
+  actions-lock:
+    name: Actions dependency lock
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6.0.3
+        with:
+          persist-credentials: false
+      - name: Install the authoritative lockfile verifier
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh extension install github/gh-actions-lock --pin v0.1.6
+      - name: Require lockfile coverage for all workflow dependencies
+        run: gh actions-lock --verify-local
+
+  licensing:
+    name: Code and documentation licences
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    container: debian:13-slim@sha256:d7e12182ce18b85b93007c1dedf31f2d29e01ccf3182cc4017c709b6259bc132
+    steps:
+      - name: Install pinned REUSE validator
+        run: |
+          apt-get update
+          apt-get install --no-install-recommends -y ca-certificates git reuse=5.0.2-1
+      - uses: actions/checkout@v6.0.3
+        with:
+          persist-credentials: false
+      - name: Validate complete licence and copyright coverage
+        run: reuse lint
