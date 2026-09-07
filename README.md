@@ -13,7 +13,25 @@ specification, an independent event oracle, controlled fault injections, a
 buffered-restart comparison, a **live preparation-failure experiment**, and
 **machine-checked Lean continuity and controller proofs**, and an **Agda
 activation contract using the repaired epistemic and Echo foundations**.
-It is a local experiment, not a released language.
+It is a research prototype, with two known detector implementations and checked
+models; a released language and general live-code loading remain future work.
+
+## Why continuity matters
+
+Firmboot belongs to the [Hyperpolymath language research programme](https://github.com/hyperpolymath/nextgen-languages):
+what makes a system count as the same continuing system when its representation
+or implementation changes? Its particular concern is **identity over time**:
+preserving observations, commitments and authority through an admitted transition.
+
+The motivating services include clean-water monitoring, leak detection, dam and
+river observations, ecological sensor networks, and desktop applications that
+retain a person's work through an update. Resource limits and the ability to stop
+safely belong in that account of continuity. Keeping a service dependable does
+not require every component to run continuously or every update to be accepted.
+
+See [purpose, identity and application directions](PURPOSE.md) for the connection
+to synchronic and diachronic identity, ecological priorities, and the concrete
+limits of these examples. Code is [MPL-2.0 and documentation is CC-BY-SA-4.0](LICENSE.md).
 
 ## Run
 

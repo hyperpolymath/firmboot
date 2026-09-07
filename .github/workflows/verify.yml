@@ -45,7 +45,9 @@ jobs:
       - name: Recheck proofs, rejection controls, runtime and observed agreement
         run: python3 proofs/agda/verify.py --ci
       - name: Ensure observed witnesses are reproducible
-        run: git diff --exit-code -- proofs/agda/Firmboot/ElixirAgreement.agda
+        run: |
+          git -c safe.directory="$GITHUB_WORKSPACE" -C "$GITHUB_WORKSPACE" rev-parse --show-toplevel
+          git -c safe.directory="$GITHUB_WORKSPACE" -C "$GITHUB_WORKSPACE" diff --exit-code -- proofs/agda/Firmboot/ElixirAgreement.agda
       - name: Retain exact verification diagnostics
         if: always()
         uses: actions/upload-artifact@v7.0.1
@@ -64,6 +66,10 @@ jobs:
       - uses: actions/checkout@v6.0.3
         with:
           persist-credentials: false
+      - name: Install proof audit dependency
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y ripgrep
       - name: Install the checksum-pinned official Lean release
         env:
           FIRMBOOT_LEAN_DIR: ${{ runner.temp }}/firmboot-lean
@@ -92,3 +98,19 @@ jobs:
         run: gh extension install github/gh-actions-lock --pin v0.1.6
       - name: Require lockfile coverage for all workflow dependencies
         run: gh actions-lock --verify-local
+
+  licensing:
+    name: Code and documentation licences
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    container: debian:13-slim@sha256:d7e12182ce18b85b93007c1dedf31f2d29e01ccf3182cc4017c709b6259bc132
+    steps:
+      - name: Install pinned REUSE validator
+        run: |
+          apt-get update
+          apt-get install --no-install-recommends -y ca-certificates git reuse=5.0.2-1
+      - uses: actions/checkout@v6.0.3
+        with:
+          persist-credentials: false
+      - name: Validate complete licence and copyright coverage
+        run: reuse lint

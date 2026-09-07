@@ -17,6 +17,7 @@ the workflows in this checkout. A configured workflow is not a successful run.
 | Actions dependency lock | The authoritative GitHub verifier confirms native lockfile coverage of workflow dependencies. |
 | CodeQL (actions), CodeQL (python) | Analyze the workflow and verifier languages actually present. Agda and Elixir semantics are checked by their proof/compiler/test tools. |
 | secret-scan / gitleaks | The shared secret scanner checks the repository for credentials. |
+| Code and documentation licences | REUSE checks complete copyright and licence coverage: MPL-2.0 for code and CC-BY-SA-4.0 for documentation. |
 
 Configure these as required GitHub checks on main, sourced from the GitHub Actions
 app, with PR-only changes, strict update-to-base requirements, resolved review

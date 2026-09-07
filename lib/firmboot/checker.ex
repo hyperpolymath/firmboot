@@ -101,7 +101,8 @@ defmodule Firmboot.Checker do
 
   defp valid_completion_times?(frames, model) do
     Enum.all?(frames, fn frame ->
-      is_integer(frame.completed_at) and frame.completed_at >= frame.at and
+      is_integer(frame.completed_at) and is_integer(frame.cost) and
+        frame.completed_at - frame.at >= frame.cost and
         frame.completed_at - frame.at <= model.deadline
     end)
   end

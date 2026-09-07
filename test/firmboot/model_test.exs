@@ -137,6 +137,7 @@ defmodule Firmboot.ModelTest do
       {%{model | frames: [%{frame | at: -1} | rest]}, :observation_sequence},
       {%{model | frames: [%{frame | version: :v2} | rest]}, :version_provenance},
       {%{model | frames: [%{frame | cost: model.deadline + 1} | rest]}, :modeled_deadline},
+      {%{model | frames: [%{frame | completed_at: frame.at} | rest]}, :decision_deadline},
       {%{model | events: []}, :event_semantics},
       {%{model | events: [event, event]}, :event_semantics}
     ]
