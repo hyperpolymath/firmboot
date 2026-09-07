@@ -46,7 +46,7 @@ if [[ "$axiom_status" -ne 1 ]] ||
 fi
 printf 'PASS: the axiom policy rejected an additional custom assumption\n'
 
-for control in ResetOwnership DropObservation OverlapPhases StaleReply BlockingPreparation; do
+for control in ResetOwnership DropObservation OverlapPhases StaleReply BlockingPreparation ClearWarningOnUpdate AcknowledgeOtherSource; do
   control_status=0
   control_output="$(lake env lean "controls/${control}.lean" 2>&1)" || control_status=$?
   if [[ "$control_status" -ne 1 ]] ||
@@ -61,4 +61,4 @@ for control in ResetOwnership DropObservation OverlapPhases StaleReply BlockingP
   printf 'PASS: Lean rejected the false %s claim\n' "$control"
 done
 
-printf 'PASS: proof build, both axiom audits, custom-axiom control and five false-claim controls\n'
+printf 'PASS: proof build, both axiom audits, custom-axiom control and seven false-claim controls\n'

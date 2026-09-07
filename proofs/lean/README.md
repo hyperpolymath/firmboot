@@ -14,15 +14,16 @@ bash verify.sh
 
 `lean-toolchain` pins the already installed toolchain. The script builds both the
 proof library and the axiom audit, treating build warnings as failures. It then
-checks five deliberately false claims. These control files are **expected to
+checks seven deliberately false claims. These control files are **expected to
 fail** when passed directly to Lean; the script checks the actual diagnostic,
 including that `decide` proved the proposition false. A missing tool, import
 failure, syntax error, warning, or unexpected exit is not a successful control.
 
-The original complete command exited **0**. All **79 named theorems** in
+The original complete command exited **0** and audited **79 named theorems** in
 `Migration.lean`, `Continuity.lean`, `Timing.lean`, `Witnesses.lean`, and
-`Supervision.lean` appear in
-[Audit.lean](Audit.lean). This count includes helper lemmas and concrete witnesses;
+`Supervision.lean`. The current [Audit.lean](Audit.lean) also includes the 16
+water-warning lemmas and witnesses: **95 named theorems in six modules**.
+This count includes helper lemmas and concrete witnesses;
 it is not a count of independent product guarantees. The original output and
 manifest are in the [historical record](../../docs/history/2026-09-06/README.md)
 and describe that snapshot. Current verification uses the script and CI in this
@@ -89,7 +90,7 @@ kernel-checked witnesses execute both directions, retain an existing episode's
 single report, and demonstrate V2 ignoring a two-high-sample episode which V1
 reports. The guard therefore does not satisfy safety by rejecting every change.
 
-Five executable rejection controls accompany the positive proofs:
+Seven executable rejection controls accompany the positive proofs:
 
 1. **Reset ownership without the guard.** An already reported episode is reported
    again, giving event IDs `[1, 1]`. Lean rejects the no-duplicates claim for this
@@ -103,6 +104,10 @@ Five executable rejection controls accompany the positive proofs:
    token activates the successor, even when the candidate has current state.
 5. **Block processing while preparation is pending.** Lean rejects the claim
    that a deliberately blocking controller advances the next input position.
+6. **Clear an outstanding warning on update.** Lean rejects the claim that
+   activating V2 discharges the resident water-warning obligation.
+7. **Acknowledge another source.** Lean rejects the claim that a receipt command
+   for another source discharges the existing warning.
 
 `pause_exceeds_deadline` additionally proves a general lower bound: if a decision
 cannot complete before a pause plus nonnegative work, a pause longer than the
@@ -173,10 +178,27 @@ mechanisms and exercises them in tests; it is not a verified extraction of this
 controller. These new results strengthen logical liveness assumptions without
 establishing physical scheduling or hardware availability.
 
+## Resident water-warning obligations
+
+[WaterLeak.lean](Firmboot/WaterLeak.lean) adds a resident raw-reading and receipt
+journal to the normalized detector. Its 16 lemmas and witnesses establish exact
+valid capture, rejection of a wrong sequence, preservation of readings/reports/
+receipts/outstanding warnings at handover, acknowledgement idempotence, and the
+inability of a subsequent sample to discharge an outstanding warning. Activation
+and acknowledgement commute at the same sample boundary. Concrete witnesses
+exercise an accepted V1-to-V2 update with a pending warning and a later low sample.
+
+The model uses opaque natural-number source/operator labels. Rejected operations
+leave state unchanged, whereas the runtime validates textual labels and returns
+error tuples. The formal sampling function takes its threshold per call; the
+runtime fixes it at construction. There is no general refinement or extraction
+proof. See the [domain experiment](../../docs/water-leak-experiment.md) for the
+executable evidence, exact observation contract and remaining gaps.
+
 ## Proof trust
 
 [Audit.lean](Audit.lean) uses Lean's `#print axioms` with `#guard_msgs` to pin the
-transitive dependency output of every named theorem in the five proof modules.
+transitive dependency output of every named theorem in the six proof modules.
 Only `propext`, `Classical.choice`, and `Quot.sound` occur; some theorems use none.
 These are Lean's standard logical axioms, **not axioms asserting Firmboot works**.
 There is no `sorryAx`, custom axiom, `Lean.trustCompiler`, `native_decide`, or

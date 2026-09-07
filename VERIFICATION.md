@@ -12,8 +12,8 @@ the workflows in this checkout. A configured workflow is not a successful run.
 
 | Check | Evidence required |
 |---|---|
-| Agda contract and Elixir agreement | Every Agda source module checks with safe mode, without K, internal double checking and warnings as errors; all 11 intentional false claims fail for the specified type mismatch; a nonempty Elixir test suite passes; all 64 observed agreement witnesses regenerate and check; the generated source remains unchanged. |
-| Lean continuity and axiom audit | Every discovered `Firmboot/` module builds with warnings as errors; all named axiom expectations in `Audit.lean` match; all declarations owned by those modules use only the three allowed standard Lean axioms; a planted custom axiom and all five false-claim controls are rejected for the intended reason. |
+| Agda contract and Elixir agreement | Every Agda source module checks with safe mode, without K, internal double checking and warnings as errors; all 11 intentional false claims fail for the specified type mismatch; a nonempty Elixir test suite passes, including the water-warning scenarios, 640 short domain traces and checker mutation controls; the water-warning CLI succeeds; all 64 observed agreement witnesses regenerate and check; the generated source remains unchanged. |
+| Lean continuity and axiom audit | Every discovered `Firmboot/` module builds with warnings as errors; all named axiom expectations in `Audit.lean` match; all declarations owned by those modules use only the three allowed standard Lean axioms; a planted custom axiom and all seven false-claim controls are rejected for the intended reason. |
 | Actions dependency lock | The authoritative GitHub verifier confirms native lockfile coverage of workflow dependencies. |
 | CodeQL (actions), CodeQL (python) | Analyze the workflow and verifier languages actually present. Agda and Elixir semantics are checked by their proof/compiler/test tools. |
 | secret-scan / gitleaks | The shared secret scanner checks the repository for credentials. |
@@ -56,6 +56,7 @@ python3 proofs/agda/verify.py \
   --epistemic-src /path/to/epistemic-types/src \
   --report-dir /path/to/verification-output
 bash proofs/lean/verify.sh
+mix run -e 'Firmboot.WaterLeak.Experiment.run()'
 actionlint
 gh actions-lock --no-fix
 ```
@@ -71,3 +72,8 @@ The Agda model and Lean model have separate assumptions. The 64 comparisons with
 Elixir are finite observations; an arbitrary-run refinement between the models,
 the language and the runtime remains an open obligation. No total memory or
 wall-clock progress guarantee is established by these checks.
+
+The water-warning contract and its narrower source/model correspondence are
+documented in [the domain experiment](docs/water-leak-experiment.md). Its receipt
+ledger is resident, in memory and unauthenticated; the checks do not establish
+durable delivery, leak-classification quality or physical water-system safety.

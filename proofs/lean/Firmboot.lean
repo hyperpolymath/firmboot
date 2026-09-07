@@ -3,3 +3,4 @@ import Firmboot.Continuity
 import Firmboot.Timing
 import Firmboot.Witnesses
 import Firmboot.Supervision
+import Firmboot.WaterLeak

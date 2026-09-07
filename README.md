@@ -11,7 +11,8 @@ part is the system's continuing obligations; its implementation may evolve.
 This directory contains the first **Elixir executable reference model**, a
 specification, an independent event oracle, controlled fault injections, a
 buffered-restart comparison, a **live preparation-failure experiment**, and
-**machine-checked Lean continuity and controller proofs**, and an **Agda
+an **ecological water-warning continuity simulation**, **machine-checked Lean
+continuity and controller proofs**, and an **Agda
 activation contract using the repaired epistemic and Echo foundations**.
 It is a research prototype, with two known detector implementations and checked
 models; a released language and general live-code loading remain future work.
@@ -46,6 +47,7 @@ mix compile --warnings-as-errors
 mix test --seed 0
 mix run -e 'Firmboot.Experiment.run()'
 mix run -e 'Firmboot.LiveExperiment.run()'
+mix run -e 'Firmboot.WaterLeak.Experiment.run()'
 bash proofs/lean/verify.sh
 sonar analyze secrets proofs/agda/verify.py
 python3 proofs/agda/verify.py --epistemic-src /path/to/epistemic-types/src --report-dir /path/to/verification-output
@@ -73,20 +75,30 @@ modeled capacity. It preserves the same input and event meaning where capacity
 suffices, but completion is delayed. With a sufficiently relaxed decision deadline,
 that simpler baseline is adequate. See [the experiment report](REPORT.md).
 
+The [water-warning experiment](docs/water-leak-experiment.md) adds simulated raw
+volume readings and a resident warning/acknowledgement ledger. An active warning
+retains its identity through a detector update. Its obligation remains pending
+after the signal clears until explicitly acknowledged. The experiment checks
+acknowledgement before and after activation, plus rejection of a corrupt migration.
+
 ## What is and is not established
 
 - **Implemented:** a deterministic transition model for two known detector
   versions; state migration checks; assigned timing budgets; an independent
-  logical event oracle; a finite buffered-restart model.
+  logical event oracle; a finite buffered-restart model; a finite water-warning
+  simulation with exact raw-reading and acknowledgement journals.
 - **Test evidence:** exact executed commands, finite coverage and outcomes are
   recorded in [REPORT.md](REPORT.md).
 - **Live process evidence:** preparation runs separately with cancellation,
   timeouts, stale-reply checks and acknowledged worker retirement. The expanded
-  suite passes 33 tests. See [LIVE-REPORT.md](LIVE-REPORT.md).
+  live experiment's recorded suite had 33 tests. See [LIVE-REPORT.md](LIVE-REPORT.md).
+  The current suite has 43 tests, including ten water-warning tests and 640 short
+  domain trajectories. See [the domain evidence and limits](docs/water-leak-experiment.md).
 - **Formal proof:** Lean 4.33.1 checks migration, arbitrary finite-run input and
   event continuity, boundary ownership, rejection, conditional assigned-cost
-  deadlines, and bounded resolution of an abstract update attempt. All 79 named
-  lemmas and witnesses have a pinned axiom audit; five false-claim controls are
+  deadlines, bounded resolution of an abstract update attempt, and preservation of
+  water-warning obligations and receipts. All 95 named
+  lemmas and witnesses have a pinned axiom audit; seven false-claim controls are
   rejected. See the
   [proof report and reproduction command](proofs/lean/README.md). Correspondence
   of the complete Elixir implementation to that model remains unproved.
@@ -129,6 +141,8 @@ have been demonstrated.
 | [proofs/agda](proofs/agda/README.md) | Current-state/Echo activation checker, service-preserving lifecycle proofs and concrete Elixir comparisons |
 | [live.ex](lib/firmboot/live.ex) | Live preparation worker, timeout/cancellation protocol and bounded diagnostics |
 | [live_experiment.ex](lib/firmboot/live_experiment.ex) | Reproducible hung-worker and recovery experiment |
+| [water_leak.ex](lib/firmboot/water_leak.ex) | Resident raw-reading, warning and acknowledgement ledgers |
+| [water-warning experiment](docs/water-leak-experiment.md) | Reproduction, independent fixture checks, scoped proofs and domain limits |
 | [CONTINUITY.md](CONTINUITY.md) | Continuity contracts, remaining failure domains and next implementation milestones |
 
 ## Next research step
