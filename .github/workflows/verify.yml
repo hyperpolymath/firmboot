@@ -46,6 +46,10 @@ jobs:
         run: python3 proofs/agda/verify.py --ci
       - name: Exercise water-warning continuity and acknowledgement scenarios
         run: mix run -e 'Firmboot.WaterLeak.Experiment.run()'
+      - name: Exercise journal recovery, gaps and measured resource use
+        run: mix run -e 'Firmboot.WaterLeak.RecoveryExperiment.run(".ci-results/recovery")'
+      - name: Check the assurance register and its negative controls
+        run: python3 scripts/assurance.py check --ci --output .ci-results/assurance-check.json
       - name: Ensure observed witnesses are reproducible
         run: |
           git -c safe.directory="$GITHUB_WORKSPACE" -C "$GITHUB_WORKSPACE" rev-parse --show-toplevel
@@ -55,7 +59,7 @@ jobs:
         uses: actions/upload-artifact@v7.0.1
         with:
           name: agda-elixir-verification
-          path: .ci-results/agda
+          path: .ci-results
           include-hidden-files: true
           if-no-files-found: error
           retention-days: 30
@@ -84,7 +88,20 @@ jobs:
           tar --zstd -xf "$RUNNER_TEMP/firmboot-lean.tar.zst" --strip-components=1 -C "$FIRMBOOT_LEAN_DIR"
           echo "$FIRMBOOT_LEAN_DIR/bin" >> "$GITHUB_PATH"
       - name: Build all Lean proofs, audit axioms and reject false claims
-        run: bash proofs/lean/verify.sh
+        shell: bash
+        run: |
+          set -o pipefail
+          mkdir -p .ci-results/lean
+          bash proofs/lean/verify.sh | tee .ci-results/lean/verify.log
+      - name: Retain the complete Lean proof audit log
+        if: always()
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: lean-verification
+          path: .ci-results/lean
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 30
 
   actions-lock:
     name: Actions dependency lock
