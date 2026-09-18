@@ -1,7 +1,7 @@
 defmodule Firmboot.WaterLeakTest do
   use ExUnit.Case, async: true
   alias Firmboot.{Update, WaterLeak}
-  alias Firmboot.WaterLeak.{Checker, Experiment}
+  alias Firmboot.WaterLeak.{Checker, Experiment, RecoveryExperiment}
 
   @contract [source: "sim-loop", threshold_ml: 100]
   @first {"sim-loop", 3}
@@ -146,6 +146,46 @@ defmodule Firmboot.WaterLeakTest do
 
       assert :ok == Checker.verify(readings, receipts, state, contract)
     end
+  end
+
+  test "a checkpoint replays exactly and rejects gaps or truncation" do
+    entries = RecoveryExperiment.journal()
+    {:ok, recovered} = RecoveryExperiment.recover(entries)
+    {expected, receipts, _snapshots} = Experiment.scenario()
+
+    assert recovered == expected
+    assert :ok == Checker.verify(Experiment.readings(), receipts, recovered, @contract)
+
+    checkpoint = RecoveryExperiment.checkpoint(entries)
+    assert {:ok, ^recovered} = RecoveryExperiment.recover_checkpoint(checkpoint)
+
+    gap =
+      Enum.map(entries, fn
+        {:reading, %{seq: 6} = reading} -> {:reading, %{reading | seq: 7}}
+        entry -> entry
+      end)
+
+    assert {:error, %{reason: {:expected_sequence, 6}}} = RecoveryExperiment.recover(gap)
+
+    truncated = binary_part(checkpoint, 0, byte_size(checkpoint) - 1)
+
+    assert {:error, %{reason: :invalid_checkpoint}} =
+             RecoveryExperiment.recover_checkpoint(truncated)
+  end
+
+  test "the recovery CLI records its checks and measured replay resources" do
+    tmp_dir =
+      Path.join(System.tmp_dir!(), "firmboot-recovery-#{System.unique_integer([:positive])}")
+
+    on_exit(fn -> File.rm_rf!(tmp_dir) end)
+
+    assert :ok == RecoveryExperiment.run(tmp_dir)
+    report = tmp_dir |> Path.join("verification.json") |> File.read!()
+
+    assert report =~ ~s("success": true)
+    assert report =~ ~s("gap_rejected": true)
+    assert report =~ ~s("truncation_rejected": true)
+    assert File.stat!(Path.join(tmp_dir, "journal.checkpoint")).size > 0
   end
 
   defp assert_error(state, receipts, expected) do
