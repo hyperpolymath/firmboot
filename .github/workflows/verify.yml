@@ -32,11 +32,11 @@ jobs:
           apt-get update
           apt-get install --no-install-recommends -y ca-certificates git ripgrep python3 \
             agda-bin=2.6.4.3-1+b2 elixir=1.18.3.dfsg-1
-      - uses: actions/checkout@v6.0.3
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6.0.3
         with:
           persist-credentials: false
       - name: Checkout merged epistemic foundations
-        uses: actions/checkout@v6.0.3
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6.0.3
         with:
           repository: hyperpolymath/epistemic-types
           ref: ad14e35e6e437b116284a43ecff5ebc09d67e37e
@@ -56,7 +56,7 @@ jobs:
           git -c safe.directory="$GITHUB_WORKSPACE" -C "$GITHUB_WORKSPACE" diff --exit-code -- proofs/agda/Firmboot/ElixirAgreement.agda
       - name: Retain exact verification diagnostics
         if: always()
-        uses: actions/upload-artifact@v7.0.1
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         with:
           name: agda-elixir-verification
           path: .ci-results
@@ -69,7 +69,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v6.0.3
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6.0.3
         with:
           persist-credentials: false
       - name: Install proof audit dependency
@@ -95,7 +95,7 @@ jobs:
           bash proofs/lean/verify.sh | tee .ci-results/lean/verify.log
       - name: Retain the complete Lean proof audit log
         if: always()
-        uses: actions/upload-artifact@v7.0.1
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         with:
           name: lean-verification
           path: .ci-results/lean
@@ -108,7 +108,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v6.0.3
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6.0.3
         with:
           persist-credentials: false
       - name: Install the authoritative lockfile verifier
@@ -128,7 +128,7 @@ jobs:
         run: |
           apt-get update
           apt-get install --no-install-recommends -y ca-certificates git reuse=5.0.2-1
-      - uses: actions/checkout@v6.0.3
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6.0.3
         with:
           persist-credentials: false
       - name: Validate complete licence and copyright coverage
