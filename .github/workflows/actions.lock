@@ -3,6 +3,7 @@
 # Docs: https://gh.io/actions-lockfile
 version: 'v0.0.2'
 workflows:
+    '.github/workflows/secrets.yml': []
     '.github/workflows/security.yml':
         - 'actions/checkout@v6.0.3'
         - 'github/codeql-action@v4.36.2'
@@ -25,3 +26,8 @@ dependencies:
         commit: 'sha1-8aad20d150bbac5944a9f9d289da16a4b0d87c1e'
         owner_id: 9919
         repo_id: 259445878
+    'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1':
+        ref: 'v7.0.1'
+        commit: 'sha1-3d3c42e5aac5ba805825da76410c181273ba90b1'
+        owner_id: 44036562
+        repo_id: 197814629
