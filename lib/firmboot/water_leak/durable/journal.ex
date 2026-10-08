@@ -124,6 +124,7 @@ defmodule Firmboot.WaterLeak.Durable.Journal do
     end
   end
 
+  # Kills the process when the armed fault point matches the current point; a no-op otherwise.
   defp crash(point, point) when not is_nil(point), do: Process.exit(self(), :kill)
   defp crash(_, _), do: :ok
 
@@ -163,6 +164,8 @@ defmodule Firmboot.WaterLeak.Durable.Journal do
     end
   end
 
+  # Reads chained slots until eof, an incomplete tail, or the record limit; verifies
+  # each slot's hash against the running chain as it goes.
   defp read_records(fd, hash, remaining, records) do
     case :file.read(fd, @slot) do
       :eof ->
@@ -191,6 +194,7 @@ defmodule Firmboot.WaterLeak.Durable.Journal do
     end
   end
 
+  # Encodes `record` and wraps it with the magic prefix, chained hash and zero padding.
   defp frame(record, previous) do
     payload = Codec.encode(record)
     size = byte_size(payload)
@@ -201,6 +205,7 @@ defmodule Firmboot.WaterLeak.Durable.Journal do
        0::size((@payload_size - size) * 8)>>, hash}
   end
 
+  # Inverse of frame/2: verifies the magic, chained hash and zero padding, then decodes.
   defp unframe(
          <<@magic, size::16, hash::binary-size(32), rest::binary-size(@payload_size)>>,
          previous

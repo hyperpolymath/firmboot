@@ -61,6 +61,7 @@ defmodule Firmboot.WaterLeak.Durable.Transition do
     Enum.reverse(ranges)
   end
 
+  # One clause per command kind; returns the possibly-updated state and its reply.
   defp execute(s, _id, {:sample, reading}) do
     existing =
       Map.get(s.waiting, reading.seq) ||
@@ -113,6 +114,7 @@ defmodule Firmboot.WaterLeak.Durable.Transition do
     end
   end
 
+  # Applies any buffered readings that are now contiguous with the processed sequence.
   defp drain(s) do
     case Map.pop(s.waiting, s.water.model.seq + 1) do
       {nil, _} ->
