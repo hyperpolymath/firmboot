@@ -10,4 +10,6 @@ defmodule FirmbootReference.MixProject do
       deps: []
     ]
   end
+
+  def application, do: [extra_applications: [:crypto]]
 end
