@@ -96,6 +96,7 @@ defmodule Firmboot.WaterLeak.Durable.Codec do
     end
   end
 
+  # Mirrors encode/1: one clause per tag byte, binary pattern matches enforcing shape.
   defp parse(
          <<0, cap::32, threshold::64, silence::32, fingerprint::binary-size(32), n,
            source::binary-size(n)>>
@@ -128,6 +129,8 @@ defmodule Firmboot.WaterLeak.Durable.Codec do
 
   defp parse(<<4, bytes::16>>), do: {:tail_repair, bytes}
   defp parse(_), do: :invalid
+
+  # Small enum <-> wire-byte mappings used by encode/1 and parse/1 above.
   defp version(:v1), do: 1
   defp version(:v2), do: 2
   defp fault(f), do: Enum.find_index([:none, :position, :reported, :history], &(&1 == f))

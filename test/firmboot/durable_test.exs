@@ -363,12 +363,15 @@ defmodule Firmboot.DurableTest do
     assert WaterLeak.outstanding(Durable.snapshot(recovered).water) == [@key]
   end
 
+  # Starts a writer under test and registers it to be stopped on exit.
   defp start(path, options \\ []) do
     assert {:ok, pid} = Durable.start(path, options)
     on_exit(fn -> if Process.alive?(pid), do: Durable.stop(pid) end)
     pid
   end
 
+  # Submits the fixture's first six readings in order, including the mid-stream
+  # :update at seq 5, so a test can start from a known, journaled baseline.
   defp seed(pid) do
     for reading <- Enum.take(Experiment.readings(), 6) do
       if reading.seq == 5 do
@@ -380,11 +383,13 @@ defmodule Firmboot.DurableTest do
     end
   end
 
+  # All orderings of a list, used to exercise every arrival order of a fixture.
   defp permutations([]), do: [[]]
 
   defp permutations(xs),
     do: for(x <- xs, tail <- permutations(List.delete(xs, x)), do: [x | tail])
 
+  # Flips one bit at `offset`, used to simulate single-byte journal corruption.
   defp flip(binary, offset) do
     <<before::binary-size(offset), byte, after_bytes::binary>> = binary
     before <> <<Bitwise.bxor(byte, 1)>> <> after_bytes

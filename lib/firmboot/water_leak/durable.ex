@@ -63,6 +63,12 @@ defmodule Firmboot.WaterLeak.Durable do
       when point in [:before_write, :partial_write, :after_write, :after_sync, :sync_error],
       do: GenServer.call(pid, {:fault, point})
 
+  @doc """
+  Opens the journal at `path`, replays it and builds the initial GenServer state.
+
+  Stops with the underlying reason on an invalid `repair_tail` option, a missing or
+  malformed journal, or a replay failure; never starts from partial state.
+  """
   @impl true
   def init({path, repair_tail}) do
     with true <- is_boolean(repair_tail),
@@ -90,6 +96,10 @@ defmodule Firmboot.WaterLeak.Durable do
     end
   end
 
+  @doc """
+  Serves `:snapshot`, `:status` and fault-arming calls directly, and `:submit` by
+  journaling and applying the command before replying.
+  """
   @impl true
   def handle_call(:snapshot, _from, s), do: {:reply, s.domain, s}
   def handle_call({:fault, fault}, _from, s), do: {:reply, :ok, %{s | fault: fault}}
@@ -137,6 +147,8 @@ defmodule Firmboot.WaterLeak.Durable do
     end
   end
 
+  # Applies a new command, journals it, and only then replies; a failed write/sync
+  # stops the process rather than reply from state that may not match the file.
   defp commit(s, id, command) do
     if s.journal.count >= s.journal.config.max_records do
       {:reply, {:error, :storage_capacity}, s}
@@ -176,6 +188,7 @@ defmodule Firmboot.WaterLeak.Durable do
     end
   end
 
+  @doc "Closes the journal file as the process terminates."
   @impl true
   def terminate(_reason, s), do: Journal.close(s.journal)
 end
