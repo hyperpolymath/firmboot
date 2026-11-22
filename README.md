@@ -49,8 +49,8 @@ mix run -e 'Firmboot.Experiment.run()'
 mix run -e 'Firmboot.LiveExperiment.run()'
 mix run -e 'Firmboot.WaterLeak.Experiment.run()'
 bash proofs/lean/verify.sh
-sonar analyze secrets proofs/agda/verify.py
-python3 proofs/agda/verify.py --epistemic-src /path/to/epistemic-types/src --report-dir /path/to/verification-output
+sonar analyze secrets proofs/agda/verify.js
+bun proofs/agda/verify.js --epistemic-src /path/to/epistemic-types/src --report-dir /path/to/verification-output
 ```
 
 Workspace agents must follow the parent secrets-on-read instructions before

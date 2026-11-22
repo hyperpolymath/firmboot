@@ -128,12 +128,12 @@ semantics by a checked theorem.
 
 ## Reproduce and inspect failures
 
-Requires Agda 2.6.4.3, the existing Elixir/Mix toolchain, Python 3 and the workspace
+Requires Agda 2.6.4.3, the existing Elixir/Mix toolchain, Bun and the workspace
 Sonar secrets scanner. No package installation is needed. From the Firmboot root:
 
 ```sh
-sonar analyze secrets proofs/agda/verify.py
-python3 proofs/agda/verify.py --epistemic-src /path/to/epistemic-types/src --report-dir /path/to/verification-output
+sonar analyze secrets proofs/agda/verify.js
+bun proofs/agda/verify.js --epistemic-src /path/to/epistemic-types/src --report-dir /path/to/verification-output
 ```
 
 The script scans sources before reading them, rechecks the core from source,

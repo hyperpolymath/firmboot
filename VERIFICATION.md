@@ -15,7 +15,7 @@ the workflows in this checkout. A configured workflow is not a successful run.
 | Agda contract and Elixir agreement | Every Agda source module checks with safe mode, without K, internal double checking and warnings as errors; all 11 intentional false claims fail for the specified type mismatch; a nonempty Elixir test suite passes, including the water-warning scenarios, 640 short domain traces and checker mutation controls; the water-warning CLI succeeds; all 64 observed agreement witnesses regenerate and check; the generated source remains unchanged. |
 | Lean continuity and axiom audit | Every discovered `Firmboot/` module builds with warnings as errors; all named axiom expectations in `Audit.lean` match; all declarations owned by those modules use only the three allowed standard Lean axioms; a planted custom axiom and all seven false-claim controls are rejected for the intended reason. |
 | Actions dependency lock | The authoritative GitHub verifier confirms native lockfile coverage of workflow dependencies. |
-| CodeQL (actions), CodeQL (python) | Analyze the workflow and verifier languages actually present. Agda and Elixir semantics are checked by their proof/compiler/test tools. |
+| CodeQL (actions), CodeQL (javascript-typescript) | Analyze the workflow and verifier languages actually present. Agda and Elixir semantics are checked by their proof/compiler/test tools. |
 | secret-scan / gitleaks | The shared secret scanner checks the repository for credentials. |
 | Code and documentation licences | REUSE checks complete copyright and licence coverage: MPL-2.0 for code and CC-BY-SA-4.0 for documentation. |
 
@@ -51,8 +51,8 @@ completed; it does not by itself mean those alert thresholds were satisfied.
 From this checkout, with the recorded tools and a reviewed epistemic source:
 
 ```sh
-sonar analyze secrets proofs/agda/verify.py
-python3 proofs/agda/verify.py \
+sonar analyze secrets proofs/agda/verify.js
+bun proofs/agda/verify.js \
   --epistemic-src /path/to/epistemic-types/src \
   --report-dir /path/to/verification-output
 bash proofs/lean/verify.sh
