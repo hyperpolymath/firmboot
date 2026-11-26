@@ -6,7 +6,7 @@
 # Julia port of the former scripts/assurance.py (Python is banned estate-wide).
 # Tooling only: this script is not an FFI or ABI layer.
 
-const PROJECT = dirname(dirname(abspath(@__DIR__)))
+const PROJECT = dirname(abspath(@__DIR__))
 
 const JObj = Vector{Pair{String,Any}}
 
