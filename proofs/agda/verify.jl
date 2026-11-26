@@ -210,12 +210,12 @@ function spawn(argv::Vector{String}, timeout)
     timed_out = Ref(false)
     timer = Timer(timeout) do _
         timed_out[] = true
-        kill(proc)
+        kill(proc, Base.SIGKILL)
     end
     wait(proc)
     close(timer)
     timed_out[] && throw(VerifyError("Command '$(join(argv, " "))' timed out after $(timeout) seconds"))
-    return proc.exitcode, String(take!(out)) * String(take!(err))
+    return (proc.termsignal != 0 ? -proc.termsignal : proc.exitcode), String(take!(out)) * String(take!(err))
 end
 
 function parse_args(args)
