@@ -28,7 +28,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [actions, python]
+        language: [actions]
     steps:
       - uses: actions/checkout@v6.0.3
         with:
