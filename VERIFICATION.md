@@ -51,8 +51,8 @@ completed; it does not by itself mean those alert thresholds were satisfied.
 From this checkout, with the recorded tools and a reviewed epistemic source:
 
 ```sh
-sonar analyze secrets proofs/agda/verify.js
-bun proofs/agda/verify.js \
+sonar analyze secrets proofs/agda/verify.jl
+julia proofs/agda/verify.jl \
   --epistemic-src /path/to/epistemic-types/src \
   --report-dir /path/to/verification-output
 bash proofs/lean/verify.sh

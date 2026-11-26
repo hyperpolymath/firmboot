@@ -30,16 +30,14 @@ jobs:
       - name: Install authenticated, version-pinned language packages
         run: |
           apt-get update
-          apt-get install --no-install-recommends -y ca-certificates curl git ripgrep unzip \
+          apt-get install --no-install-recommends -y ca-certificates curl git ripgrep \
             agda-bin=2.6.4.3-1+b2 elixir=1.18.3.dfsg-1
-      - name: Install the checksum-pinned Bun release
+      - name: Install the checksum-pinned Julia release
         run: |
-          curl --fail --location --proto '=https' --tlsv1.2 --retry 3 \
-            https://github.com/oven-sh/bun/releases/download/bun-v1.4.4/bun-linux-x64.zip \
-            --output /tmp/bun.zip
-          echo 'bf8ccbfb2b0b80159e0f9a6d15c55317add8077534dbc6130a3edb52fccb395c  /tmp/bun.zip' | sha256sum --check --strict
-          unzip -q /tmp/bun.zip -d /tmp/bun
-          echo /tmp/bun/bun-linux-x64 >> "$GITHUB_PATH"
+          curl -fsSL --proto '=https' --tlsv1.2 https://julialang-s3.julialang.org/bin/linux/x64/1.11/julia-1.11.5-linux-x86_64.tar.gz -o /tmp/julia.tar.gz
+          echo '723e878c642220cc0251a0e13758c059a389cadc7f01376feaf1ea7388fe8f9c  /tmp/julia.tar.gz' | sha256sum --check --strict
+          tar -xf /tmp/julia.tar.gz -C /tmp
+          echo "/tmp/julia-1.11.5/bin" >> "$GITHUB_PATH"
       - uses: actions/checkout@v6.0.3
         with:
           persist-credentials: false
@@ -51,13 +49,13 @@ jobs:
           path: .ci-deps/epistemic-types
           persist-credentials: false
       - name: Recheck proofs, rejection controls, runtime and observed agreement
-        run: bun proofs/agda/verify.js --ci
+        run: julia proofs/agda/verify.jl --ci
       - name: Exercise water-warning continuity and acknowledgement scenarios
         run: mix run -e 'Firmboot.WaterLeak.Experiment.run()'
       - name: Exercise journal recovery, gaps and measured resource use
         run: mix run -e 'Firmboot.WaterLeak.RecoveryExperiment.run(".ci-results/recovery")'
       - name: Check the assurance register and its negative controls
-        run: bun scripts/assurance.js check --ci --output .ci-results/assurance-check.json
+        run: julia scripts/assurance.jl check --ci --output .ci-results/assurance-check.json
       - name: Ensure observed witnesses are reproducible
         run: |
           git -c safe.directory="$GITHUB_WORKSPACE" -C "$GITHUB_WORKSPACE" rev-parse --show-toplevel
